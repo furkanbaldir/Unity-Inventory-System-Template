@@ -4,11 +4,12 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.EditorTools;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 [EditorTool("CreateInventoryNodes")]
 public class CreateInventoryNodesEditorTool : EditorWindow
 {
-    private string _objectName;                 // Inventory object name
+    //private string _objectName;                 // Inventory object name
     private int _horizontalNodeAmount = 0;      // Amount of horizontal nodes
     private int _verticalNodeAmount = 0;        // Amount of vertical nodes
     private int _horizontalDistance = 0;        // Distance between two nodes horizontally
@@ -25,7 +26,7 @@ public class CreateInventoryNodesEditorTool : EditorWindow
     private void OnGUI()
     {
         GUILayout.Label("Create New Inventory", EditorStyles.boldLabel);
-        _objectName = EditorGUILayout.TextField("Object Name", _objectName);
+        //_objectName = EditorGUILayout.TextField("Object Name", _objectName);
         _horizontalNodeAmount = EditorGUILayout.IntField("Horizontal Node Amount", _horizontalNodeAmount);
         _verticalNodeAmount = EditorGUILayout.IntField("Vertical Node Amount", _verticalNodeAmount);
         _horizontalDistance = EditorGUILayout.IntField("Horizontal Distance", _horizontalDistance);
@@ -44,11 +45,11 @@ public class CreateInventoryNodesEditorTool : EditorWindow
     /// </summary>
     private void SpawnInventory()
     {
-        if(_objectName == string.Empty)
+        /*if(_objectName == string.Empty)
         {
             Debug.LogError("Error: Please enter a object name\nError field: 'Object Name'");
             return;
-        }
+        }*/
         if(_horizontalNodeAmount <= 0)
         {
             Debug.LogError("Error: Please enter a number that it is greater than zero\nError Field: 'Horizontal Node Amount'");
@@ -68,7 +69,7 @@ public class CreateInventoryNodesEditorTool : EditorWindow
         {
             Debug.LogError("Error: Please enter a number to determine distance between two nodes horizontally." +
                 " For advice, Use sprite resolution values like 100x120 For horizontal, this value is 100" +
-                "\n Error Field: 'Horizontal Distance'");
+                "\nError Field: 'Horizontal Distance'");
         }
         if(_verticalDistance <= 0)
         {
@@ -84,21 +85,29 @@ public class CreateInventoryNodesEditorTool : EditorWindow
         // If canvas is not exist, create canvas object and set parent object of every instantiated node objects
         if(GameObject.Find("Canvas") != null)
         {
-            GameObject _canvasObject;
-            _canvasObject = GameObject.Find("Canvas");
+            GameObject canvasObject;
+            canvasObject = GameObject.Find("Canvas");
 
             Vector2 editableAnchoredPosition;               // This variables uses to change next instantiated object position
             editableAnchoredPosition = Vector2.zero;
+
+            GameObject inventory = new GameObject();
+            inventory.name = "Inventory";
+            inventory.transform.SetParent(canvasObject.transform);
+            
 
             int numberOfNodes = 0;                          // This variables uses to name next instantiated object
 
             for(int i = 0; i < _horizontalNodeAmount; i++)
             {
-                for(int j = 0; j <_verticalNodeAmount; j++)
+                
+                for (int j = 0; j <_verticalNodeAmount; j++)
                 {
+                    numberOfNodes++;
                     GameObject newInventory = Instantiate(_inventoryNodePrefab, spawnPosition, spawnQuaternion);
+                    newInventory.transform.SetParent(inventory.transform);
                     newInventory.name = "Node" + numberOfNodes.ToString();
-                    newInventory.transform.SetParent(_canvasObject.transform);
+                    newInventory.transform.SetParent(inventory.transform);
 
                     newInventory.GetComponent<RectTransform>().localScale = Vector3.one;
                     newInventory.GetComponent<RectTransform>().sizeDelta = new Vector2(100,100);
@@ -108,7 +117,7 @@ public class CreateInventoryNodesEditorTool : EditorWindow
                     tempX = editableAnchoredPosition.x + _horizontalDistance;
                     editableAnchoredPosition = new Vector2(tempX, editableAnchoredPosition.y);
 
-                    numberOfNodes++;
+                    
                 }
                 float tempY;
                 tempY = editableAnchoredPosition.y - _verticalDistance; 
@@ -126,6 +135,10 @@ public class CreateInventoryNodesEditorTool : EditorWindow
             newGameobject.name = "Canvas";
             newGameobject.AddComponent<Canvas>();
 
+            GameObject inventory = new GameObject();
+            inventory.name = "Inventory";
+            inventory.transform.SetParent(newGameobject.transform);
+
             newCanvas = newGameobject.GetComponent<Canvas>();
             newCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
             newGameobject.AddComponent<CanvasScaler>();
@@ -138,11 +151,13 @@ public class CreateInventoryNodesEditorTool : EditorWindow
 
             for (int i = 0; i < _horizontalNodeAmount; i++)
             {
+                
                 for (int j = 0; j < _verticalNodeAmount; j++)
                 {
+                    numberOfNodes++;
                     GameObject newInventory = Instantiate(_inventoryNodePrefab, spawnPosition, spawnQuaternion);
                     newInventory.name = "Node" + numberOfNodes.ToString();
-                    newInventory.transform.SetParent(newGameobject.transform);
+                    newInventory.transform.SetParent(inventory.transform);
 
                     newInventory.GetComponent<RectTransform>().localScale = Vector3.one;
                     newInventory.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 100);
@@ -155,6 +170,17 @@ public class CreateInventoryNodesEditorTool : EditorWindow
                 float tempY;
                 tempY = editableAnchoredPosition.y - _verticalDistance;
                 editableAnchoredPosition = new Vector2(0, tempY);
+
+                
+            }
+
+            if(GameObject.Find("EventSystem") == null)
+            {
+                GameObject newEventSystem = new GameObject();
+                newEventSystem.name = "EventSystem";
+                newEventSystem.AddComponent<EventSystem>();
+                newEventSystem.AddComponent<StandaloneInputModule>();
+                //Instantiate(newEventSystem, Vector3.zero, Quaternion.identity);
             }
         }
 
