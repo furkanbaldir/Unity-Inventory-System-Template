@@ -15,6 +15,9 @@ public class InventoryController : MonoBehaviour
 
     [SerializeField]
     private Sprite denemeSprite;
+
+    private Dictionary<string, GameObject> _items = new Dictionary<string, GameObject>();
+    
     private void Start()
     {
         _inventoryNodes = new GameObject[_inventoryNodesSize];
@@ -33,7 +36,7 @@ public class InventoryController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.U))
         {
-            AddItem(3,1,denemeSprite, 0);
+            AddItemToInventory(3,1,denemeSprite, 0);
         }
         if (Input.GetKeyDown(KeyCode.K))
         {
@@ -62,7 +65,12 @@ public class InventoryController : MonoBehaviour
         return _inventoryNodes[index];
     }
 
-    public void AddItem(int itemId, int itemAmount, Sprite itemSprite, int nodeIndex)
+    public void AddItem(string itemName, GameObject item)
+    {
+        _items.Add(itemName, item);
+    }
+
+    public void AddItemToInventory(int itemId, int itemAmount, Sprite itemSprite, int nodeIndex)
     {
         GameObject node = GetInventoryNode(nodeIndex);
         InventoryNode inventoryNode = node.GetComponent<InventoryNode>();
