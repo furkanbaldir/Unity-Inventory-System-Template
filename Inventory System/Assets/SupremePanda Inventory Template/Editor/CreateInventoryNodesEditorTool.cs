@@ -15,6 +15,10 @@ public class CreateInventoryNodesEditorTool : EditorWindow
     private int _horizontalDistance = 0;        // Distance between two nodes horizontally
     private int _verticalDistance = 0;          // Distance between two nodes vertically
     private GameObject _inventoryNodePrefab;    // Inventory node prefab
+    [SerializeField]
+    private GameObject _inventoryController;    // Inventory controller prefab
+
+    private int _inventoryNodesArraySize;
 
     [MenuItem("Tools/Create Inventory")]
     public static void ShowWindow()
@@ -32,8 +36,10 @@ public class CreateInventoryNodesEditorTool : EditorWindow
         _horizontalDistance = EditorGUILayout.IntField("Horizontal Distance", _horizontalDistance);
         _verticalDistance = EditorGUILayout.IntField("Vertical Distance", _verticalDistance);
         _inventoryNodePrefab = EditorGUILayout.ObjectField("Inventory Node Prefab", _inventoryNodePrefab, typeof(GameObject), false) as GameObject;
+        _inventoryController = EditorGUILayout.ObjectField("Inventory Controller Prefab", _inventoryController, typeof(GameObject), false) as GameObject;
 
-        if(GUILayout.Button("Spawn Inventory"))
+
+        if (GUILayout.Button("Spawn Inventory"))
         {
             SpawnInventory();
         }
@@ -77,7 +83,13 @@ public class CreateInventoryNodesEditorTool : EditorWindow
                 " For advice, Use sprite resolution values like 100x120 For vertical, this value is 120" +
                 "\nError Field: 'Vertical Distance'");
         }
+        if(_inventoryController == null)
+        {
+            Debug.LogWarning("Warning: If you do not assign inventory controller prefab, you must create your controller. Or if you assign, you can reach the" +
+                "pre-maded inventory functions.");
+        }
 
+        _inventoryController.GetComponent<InventoryController>().SetInventoryNodesSize(_horizontalNodeAmount * _verticalNodeAmount);
 
         Vector3 spawnPosition = new Vector3(0, 0, 0);       // Spawn position of inventory node prefab
         Quaternion spawnQuaternion = Quaternion.identity;   // Spawn Quaternion values of inventory node prefab
@@ -94,7 +106,13 @@ public class CreateInventoryNodesEditorTool : EditorWindow
             GameObject inventory = new GameObject();
             inventory.name = "Inventory";
             inventory.transform.SetParent(canvasObject.transform);
-            
+
+            if (_inventoryController != null)
+            {
+                GameObject newInventoryController = Instantiate(_inventoryController, Vector3.zero, Quaternion.identity);
+                newInventoryController.name = "Inventory Controller";
+                newInventoryController.GetComponent<InventoryController>().SetInventory(inventory);
+            }    
 
             int numberOfNodes = 0;                          // This variables uses to name next instantiated object
 
@@ -113,10 +131,11 @@ public class CreateInventoryNodesEditorTool : EditorWindow
                     newInventory.GetComponent<RectTransform>().sizeDelta = new Vector2(100,100);
                     newInventory.GetComponent<RectTransform>().anchoredPosition = editableAnchoredPosition;
 
+                    newInventory.GetComponent<InventoryNode>().SetNodeId(numberOfNodes);
+
                     float tempX;
                     tempX = editableAnchoredPosition.x + _horizontalDistance;
                     editableAnchoredPosition = new Vector2(tempX, editableAnchoredPosition.y);
-
                     
                 }
                 float tempY;
@@ -138,6 +157,13 @@ public class CreateInventoryNodesEditorTool : EditorWindow
             GameObject inventory = new GameObject();
             inventory.name = "Inventory";
             inventory.transform.SetParent(newGameobject.transform);
+
+            if (_inventoryController != null)
+            {
+                GameObject newInventoryController = Instantiate(_inventoryController, Vector3.zero, Quaternion.identity);
+                newInventoryController.name = "Inventory Controller";
+                newInventoryController.GetComponent<InventoryController>().SetInventory(inventory);
+            }
 
             newCanvas = newGameobject.GetComponent<Canvas>();
             newCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -163,15 +189,15 @@ public class CreateInventoryNodesEditorTool : EditorWindow
                     newInventory.GetComponent<RectTransform>().sizeDelta = new Vector2(100, 100);
                     newInventory.GetComponent<RectTransform>().anchoredPosition = editableAnchoredPosition;
 
+                    newInventory.GetComponent<InventoryNode>().SetNodeId(numberOfNodes);
+
                     float tempX;
                     tempX = editableAnchoredPosition.x + _horizontalDistance;
                     editableAnchoredPosition = new Vector2(tempX, editableAnchoredPosition.y);
                 }
                 float tempY;
                 tempY = editableAnchoredPosition.y - _verticalDistance;
-                editableAnchoredPosition = new Vector2(0, tempY);
-
-                
+                editableAnchoredPosition = new Vector2(0, tempY);   
             }
 
             if(GameObject.Find("EventSystem") == null)
@@ -180,7 +206,6 @@ public class CreateInventoryNodesEditorTool : EditorWindow
                 newEventSystem.name = "EventSystem";
                 newEventSystem.AddComponent<EventSystem>();
                 newEventSystem.AddComponent<StandaloneInputModule>();
-                //Instantiate(newEventSystem, Vector3.zero, Quaternion.identity);
             }
         }
 
