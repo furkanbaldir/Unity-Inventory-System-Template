@@ -14,10 +14,8 @@ public class InventoryController : MonoBehaviour
     private GameObject[] _inventoryNodes;
 
     [SerializeField]
-    private Sprite denemeSprite;
+    private List<GameObject> _itemObjects = new List<GameObject>();
 
-    private Dictionary<string, GameObject> _items = new Dictionary<string, GameObject>();
-    
     private void Start()
     {
         _inventoryNodes = new GameObject[_inventoryNodesSize];
@@ -28,21 +26,35 @@ public class InventoryController : MonoBehaviour
             //Debug.Log(child.gameObject.name);
             _inventoryNodes[counter] = child.gameObject;
             Debug.Log(_inventoryNodes[counter]);
+            counter++;
         }
 
+        foreach(GameObject item in _itemObjects)
+        {
+            Debug.Log(item.GetComponent<ItemUI>().GetItemId());
+        }
+
+        //AddItemToInventory(_itemObjects[0].GetComponent<ItemUI>().GetItemId(), 1, _itemObjects[0].GetComponent<ItemUI>().GetItemSprite(), 0);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            AddItemToInventory(3,1,denemeSprite, 0);
-        }
         if (Input.GetKeyDown(KeyCode.K))
         {
-            Debug.Log(GetInventoryNode(0).GetComponent<InventoryNode>().GetItemId());
-            Debug.Log(GetInventoryNode(0).GetComponent<InventoryNode>().GetItemAmount());
+            AddItemToInventory(_itemObjects[1], 2);
         }
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            AddItemToInventory(_itemObjects[0], 1);
+        }
+    }
+    /// <summary>
+    /// This function uses with create inventory tool. Spawning inventory is sending size amount to create array.
+    /// </summary>
+    /// <param name="size">Inventory node amount and array size</param>
+    public void SetInventoryNodesSize(int size)
+    {
+        _inventoryNodesSize = size;
     }
 
     public void SetInventory(GameObject inventory)
@@ -51,38 +63,78 @@ public class InventoryController : MonoBehaviour
         Debug.Log("setted inventory");
     }
 
-    public void SetInventoryNodesSize(int size)
-    {
-        _inventoryNodesSize = size;
-    }
+    
 
     /// <summary>
-    /// 
+    /// This function provides getting inventory node according to index of node.
     /// </summary>
-    /// <param name="index"> index = node number - 1</param>
+    /// <param name="index">Array index of nodes</param>
     private GameObject GetInventoryNode(int index)
     {
         return _inventoryNodes[index];
     }
 
-    public void AddItem(string itemName, GameObject item)
+    /// <summary>
+    /// This function provides add item to inventory. 
+    /// </summary>
+    /// <param name="item">GameObject item is that we create with "Tools/Create Item"</param>
+    /// <param name="amount">Amount of item to show how many items in node</param>
+    public void AddItemToInventory(GameObject item, int amount)
     {
-        _items.Add(itemName, item);
+        bool itemInNode = false;
+        int nodeIndex = 0;
+        while (!itemInNode)
+        {
+            Debug.Log(GetInventoryNode(0));
+            GameObject node = GetInventoryNode(nodeIndex);
+            InventoryNode inventoryNode = node.GetComponent<InventoryNode>();
+            
+            if(CheckIsNodeFilled(inventoryNode) == false)
+            {
+                // yerleştir
+                ItemUI itemUI = item.GetComponent<ItemUI>();
+
+                Debug.Log(itemUI.GetItemId());
+
+                inventoryNode.SetIsFilled(true);
+                inventoryNode.SetItemId(itemUI.GetItemId());
+                inventoryNode.SetNodeItemSprite(itemUI.GetItemSprite());
+                inventoryNode.SetItemAmount(inventoryNode.GetItemAmount() + amount);
+                itemInNode = true;
+            }
+            else
+            {
+                if(nodeIndex < _inventoryNodes.Length - 1)
+                {
+                    nodeIndex++;
+                }
+                else
+                {
+                    Debug.LogError("Error: No empty inventory node");
+                    return;
+                }
+            }
+        }
+
+        
+        
     }
 
-    public void AddItemToInventory(int itemId, int itemAmount, Sprite itemSprite, int nodeIndex)
+    /// <summary>
+    /// This function checks InventoryNode is filled or not.
+    /// </summary>
+    /// <param name="inventoryNode">inventoryNode is a script component of node object</param>
+    /// <returns></returns>
+    private bool CheckIsNodeFilled(InventoryNode inventoryNode)
     {
-        GameObject node = GetInventoryNode(nodeIndex);
-        InventoryNode inventoryNode = node.GetComponent<InventoryNode>();
-
-        if (!inventoryNode.GetIsFilled())
+        if (inventoryNode.GetIsFilled())
         {
-            inventoryNode.SetIsFilled(true);
-            inventoryNode.SetItemId(itemId);
-            inventoryNode.SetItemAmount(itemAmount);
-            inventoryNode.SetNodeItemSprite(itemSprite);
+            return true;
         }
-        
+        else
+        {
+            return false;
+        }
     }
    
 }

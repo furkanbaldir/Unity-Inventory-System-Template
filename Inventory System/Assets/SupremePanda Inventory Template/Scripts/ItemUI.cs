@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class ItemUI : MonoBehaviour
 {
+    [SerializeField]
     private int _itemId;
+    [SerializeField]
     private Sprite _itemSprite;
 
     public int GetItemId()

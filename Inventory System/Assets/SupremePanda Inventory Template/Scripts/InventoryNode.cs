@@ -83,6 +83,7 @@ public class InventoryNode : MonoBehaviour
             GameObject nodeImage = this.transform.Find("NodeImage").gameObject;
             nodeImage.GetComponent<Image>().sprite = _nodeItemSprite;
             nodeImage.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
+            Debug.Log("burası oluo");
         }
     }
 }

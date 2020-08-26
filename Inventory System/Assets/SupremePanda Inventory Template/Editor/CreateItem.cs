@@ -52,41 +52,11 @@ public class CreateItem : EditorWindow
                 "\nErrorField: 'Item name'");
         }
 
-        if(GameObject.Find("Canvas") == null)
-        {
-            GameObject newCanvasObject;
-            Canvas newCanvas;
+        GameObject newItem = new GameObject();
+        newItem.name = _itemName;
+        newItem.AddComponent<ItemUI>();
+        newItem.GetComponent<ItemUI>().SetItemId(_itemId);
+        newItem.GetComponent<ItemUI>().SetItemSprite(_itemSprite);
 
-            newCanvasObject = new GameObject();
-            newCanvasObject.name = "Canvas";
-            newCanvasObject.AddComponent<Canvas>();
-            newCanvasObject.AddComponent<CanvasScaler>();
-            newCanvasObject.AddComponent<GraphicRaycaster>();
-
-            newCanvas = newCanvasObject.GetComponent<Canvas>();
-            newCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
-
-            GameObject newItem = new GameObject();
-            newItem.transform.SetParent(newCanvasObject.transform);
-            newItem.name = _itemName;
-            newItem.AddComponent<ItemUI>();
-            newItem.GetComponent<ItemUI>().SetItemId(_itemId);
-            newItem.GetComponent<ItemUI>().SetItemSprite(_itemSprite);
-            newItem.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-        }
-
-        else
-        {
-            GameObject canvasObject = GameObject.Find("Canvas");
-            GameObject newItem = new GameObject();
-            newItem.transform.SetParent(canvasObject.transform);
-            newItem.name = _itemName;
-            newItem.AddComponent<ItemUI>();
-            newItem.GetComponent<ItemUI>().SetItemId(_itemId);
-            newItem.GetComponent<ItemUI>().SetItemSprite(_itemSprite);
-            newItem.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
-        }
-
-        
     }
 }

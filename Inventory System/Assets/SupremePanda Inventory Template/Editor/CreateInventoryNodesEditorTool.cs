@@ -15,7 +15,6 @@ public class CreateInventoryNodesEditorTool : EditorWindow
     private int _horizontalDistance = 0;        // Distance between two nodes horizontally
     private int _verticalDistance = 0;          // Distance between two nodes vertically
     private GameObject _inventoryNodePrefab;    // Inventory node prefab
-    [SerializeField]
     private GameObject _inventoryController;    // Inventory controller prefab
 
     private int _inventoryNodesArraySize;
