@@ -1,4 +1,5 @@
-﻿using System;
+﻿using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,18 +35,17 @@ public class InventoryController : MonoBehaviour
             Debug.Log(item.GetComponent<ItemUI>().GetItemId());
         }
 
-        //AddItemToInventory(_itemObjects[0].GetComponent<ItemUI>().GetItemId(), 1, _itemObjects[0].GetComponent<ItemUI>().GetItemSprite(), 0);
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.K))
         {
-            AddItemToInventory(_itemObjects[1], 2);
+            RemoveItemFromInventory(0, 5);
         }
         if (Input.GetKeyDown(KeyCode.O))
         {
-            AddItemToInventory(_itemObjects[0], 1);
+            AddItemToInventory(_itemObjects[0], 10);
         }
     }
     /// <summary>
@@ -91,7 +91,6 @@ public class InventoryController : MonoBehaviour
             
             if(CheckIsNodeFilled(inventoryNode) == false)
             {
-                // yerleştir
                 ItemUI itemUI = item.GetComponent<ItemUI>();
 
                 Debug.Log(itemUI.GetItemId());
@@ -114,9 +113,31 @@ public class InventoryController : MonoBehaviour
                     return;
                 }
             }
-        }
+        }      
+    }
 
-        
+    public void RemoveItemFromInventory(int nodeIndex, int amount)
+    {
+        GameObject node = GetInventoryNode(nodeIndex);
+        InventoryNode inventoryNode = node.GetComponent<InventoryNode>();
+
+        if(inventoryNode.GetIsFilled() == true)
+        {
+            if (inventoryNode.GetItemAmount() - amount > 0)
+            {
+                // item kalcak amount değişcek
+                inventoryNode.SubtractItemAmount(amount);
+            }
+            else
+            {
+                //itemi yok et
+                inventoryNode.RemoveItemFromNode();
+            }
+        }
+        else
+        {
+            Debug.LogError("Error: There is no item to remove");
+        }
         
     }
 

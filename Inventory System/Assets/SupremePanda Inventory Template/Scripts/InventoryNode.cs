@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -51,12 +52,25 @@ public class InventoryNode : MonoBehaviour
     public void SetItemAmount(int amount)
     {
         _itemAmount = amount;
+        CheckSettedValues(2);
+    }
+
+    public void AddItemAmount(int amount)
+    {
+        _itemAmount += amount;
+        CheckSettedValues(2);
+    }
+
+    public void SubtractItemAmount(int amount)
+    {
+        _itemAmount -= amount;
+        CheckSettedValues(2);
     }
 
     public void SetNodeItemSprite(Sprite sprite)
     {
         _nodeItemSprite = sprite;
-        CheckSettedValues(3);
+        CheckSettedValues(1);
     }
 
     public void SetIsFilled(bool isFilled)
@@ -64,26 +78,40 @@ public class InventoryNode : MonoBehaviour
         _isFilled = isFilled;
     }
 
+    public void RemoveItemFromNode()
+    {
+        GameObject nodeImage = this.transform.Find("NodeImage").gameObject;
+        nodeImage.GetComponent<Image>().sprite = null;
+        nodeImage.GetComponent<Image>().color = new Color32(255, 255, 255, 0);
+
+        TMP_Text itemAmount = transform.GetChild(0).GetChild(0).gameObject.GetComponent<TMP_Text>();
+        itemAmount.gameObject.SetActive(false);
+        itemAmount.text = "";
+
+        _isFilled = false;
+        _itemAmount = 0;
+        _itemId = 0;
+        _nodeItemSprite = null;
+    }
+
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="operationId">operation id: 1 -> itemId, 2 -> itemAmount, 3 -> itemSprite, 4 -> nodeId</param>
+    /// <param name="operationId">operation id 1: sprite, id 2: item amount</param> todo: itemleri ui üzerinden de sil
     private void CheckSettedValues(int operationId)
     {
         if(operationId == 1)
-        {
-            // toDo: gerekli bir şey olmayabilir
-        }
-        else if(operationId == 2)
-        {
-            // toDo: node içindeki texti düzenle
-        }
-        else if(operationId == 3)
         {
             GameObject nodeImage = this.transform.Find("NodeImage").gameObject;
             nodeImage.GetComponent<Image>().sprite = _nodeItemSprite;
             nodeImage.GetComponent<Image>().color = new Color32(255, 255, 255, 255);
             Debug.Log("burası oluo");
+        }
+        else if(operationId == 2)
+        {
+            TMP_Text itemAmount = transform.GetChild(0).GetChild(0).gameObject.GetComponent<TMP_Text>();
+            itemAmount.gameObject.SetActive(true);
+            itemAmount.text = _itemAmount.ToString();   
         }
     }
 }
