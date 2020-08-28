@@ -47,6 +47,10 @@ public class InventoryController : MonoBehaviour
         {
             AddItemToInventory(_itemObjects[0], 10);
         }
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            AddItemToInventory(_itemObjects[1], 10);
+        }
     }
     /// <summary>
     /// This function uses with create inventory tool. Spawning inventory is sending size amount to create array.
@@ -114,6 +118,25 @@ public class InventoryController : MonoBehaviour
                 }
             }
         }      
+    }
+
+    public bool ReplaceItemInInventory(ItemUI item, int amount, GameObject node)
+    {
+        if(node.GetComponent<InventoryNode>().GetIsFilled() == false)
+        {
+            node.GetComponent<InventoryNode>().SetItemId(item.GetItemId());
+            node.GetComponent<InventoryNode>().SetNodeItemSprite(item.GetItemSprite());
+            node.GetComponent<InventoryNode>().SetItemAmount(amount);
+            node.GetComponent<InventoryNode>().SetIsFilled(true);
+
+            return true;
+        }
+        else
+        {
+            Debug.LogError("Error: This node is not empty");
+            return false;
+        }
+       
     }
 
     public void RemoveItemFromInventory(int nodeIndex, int amount)

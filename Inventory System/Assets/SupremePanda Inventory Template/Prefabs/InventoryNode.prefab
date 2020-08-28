@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 4714950246200479047}
   - component: {fileID: 8266072280828748542}
   - component: {fileID: 1525405345146008131}
+  - component: {fileID: 5651896503177972646}
+  - component: {fileID: 122652606973201597}
   m_Layer: 0
   m_Name: NodeImage
   m_TagString: Untagged
@@ -75,6 +77,30 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5651896503177972646
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589008004709441279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c38fd7f6c292ea64d897d8b889213c8f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!225 &122652606973201597
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589008004709441279}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &2473121477322100772
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,6 +269,7 @@ GameObject:
   - component: {fileID: 7495155998010294363}
   - component: {fileID: 5371465889955728324}
   - component: {fileID: 5483139887891455853}
+  - component: {fileID: 1298591958801175570}
   m_Layer: 0
   m_Name: InventoryNode
   m_TagString: Untagged
@@ -317,5 +344,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f8099b158780eb24bb6c6d5793e6e6d4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1298591958801175570
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5652723893194637858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c118bb1646a6664aa27df5491277095, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
