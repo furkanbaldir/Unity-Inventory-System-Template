@@ -45,13 +45,6 @@ public class UIControllerForItem : MonoBehaviour
 
     }
 
-    /*
-    public void OnPointerClick(PointerEventData eventData) // 3
-    {
-
-        print("I was clicked");
-    }*/
-
     public void OnDrag(PointerEventData eventData)
     {
         //transform.position = Input.mousePosition;
@@ -84,20 +77,40 @@ public class UIControllerForItem : MonoBehaviour
 
         _targetInventoryNode = _uiController.GetComponent<UIController>().GetSelectedInventoryNode();
 
-        if (_targetInventoryNode.GetIsFilled() == true)
+        Debug.Log(_targetInventoryNode.gameObject.tag);
+        if (_targetInventoryNode.gameObject.tag == "TrashNode")
         {
-            int tempId = _targetInventoryNode.GetItemId();
-            Sprite tempSprite = _targetInventoryNode.GetNodeItemSprite();
-            int tempItemAmount = _targetInventoryNode.GetItemAmount();
+            Debug.Log("trash");
+            _inventoryNode.RemoveItemFromNode();
+        }
 
-            _targetInventoryNode.SetItemId(_inventoryNode.GetItemId());
-            _targetInventoryNode.SetNodeItemSprite(_inventoryNode.GetNodeItemSprite());
-            _targetInventoryNode.SetItemAmount(_inventoryNode.GetItemAmount());
+        else if (_targetInventoryNode.GetIsFilled() == true)
+        {
+            Debug.Log(CheckNodesHaveSameID(_inventoryNode, _targetInventoryNode));
+            if(CheckNodesHaveSameID(_inventoryNode, _targetInventoryNode))
+            {
+                if(_targetInventoryNode.GetItemAmount() + _inventoryNode.GetItemAmount() <= _targetInventoryNode.GetMaxItemAmount())
+                {
+                    _targetInventoryNode.AddItemAmount(_inventoryNode.GetItemAmount());
+                    _inventoryNode.RemoveItemFromNode();
+                }
+            }
+            else
+            {
+                int tempId = _targetInventoryNode.GetItemId();
+                Sprite tempSprite = _targetInventoryNode.GetNodeItemSprite();
+                int tempItemAmount = _targetInventoryNode.GetItemAmount();
 
-            _inventoryNode.SetItemId(tempId);
-            _inventoryNode.SetNodeItemSprite(tempSprite);
-            _inventoryNode.SetItemAmount(tempItemAmount);
-            _inventoryNode.SetIsFilled(true);
+                _targetInventoryNode.SetItemId(_inventoryNode.GetItemId());
+                _targetInventoryNode.SetNodeItemSprite(_inventoryNode.GetNodeItemSprite());
+                _targetInventoryNode.SetItemAmount(_inventoryNode.GetItemAmount());
+
+                _inventoryNode.SetItemId(tempId);
+                _inventoryNode.SetNodeItemSprite(tempSprite);
+                _inventoryNode.SetItemAmount(tempItemAmount);
+                _inventoryNode.SetIsFilled(true);
+            }
+            
         }
         else
         {
@@ -108,20 +121,18 @@ public class UIControllerForItem : MonoBehaviour
 
             _inventoryNode.RemoveItemFromNode();
         }
-
-        
-
     }
 
-    /*public void OnPointerEnter(PointerEventData eventData)
+    private bool CheckNodesHaveSameID(InventoryNode sourceNode, InventoryNode targetNode)
     {
-        _itemImage.color = new Color32(174, 174, 174, 255);
-        Debug.Log("pointer entered");
+        if(sourceNode.GetItemId() == targetNode.GetItemId())
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        _itemImage.color = new Color32(255, 255, 255, 255);
-        Debug.Log("pointer exited");
-    }*/
 }

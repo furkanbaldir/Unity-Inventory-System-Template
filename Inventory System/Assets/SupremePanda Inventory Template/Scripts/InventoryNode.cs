@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -9,7 +10,9 @@ public class InventoryNode : MonoBehaviour
     private int _nodeId;
     private bool _isFilled;
     private int _itemId;
+
     private int _itemAmount;
+    private int _maxItemAmount = 50;
     private Sprite _nodeItemSprite;
 
     // Getters
@@ -26,6 +29,11 @@ public class InventoryNode : MonoBehaviour
     public int GetItemAmount()
     {
         return _itemAmount;
+    }
+
+    public int GetMaxItemAmount()
+    {
+        return _maxItemAmount;
     }
 
     public Sprite GetNodeItemSprite()
@@ -55,10 +63,16 @@ public class InventoryNode : MonoBehaviour
         CheckSettedValues(2);
     }
 
+    public void SetMaxItemAmount(int amount)
+    {
+        _maxItemAmount = amount;
+    }
+
     public void AddItemAmount(int amount)
     {
         _itemAmount += amount;
         CheckSettedValues(2);
+        Debug.Log(_itemAmount);
     }
 
     public void SubtractItemAmount(int amount)

@@ -17,6 +17,9 @@ public class InventoryController : MonoBehaviour
     [SerializeField]
     private List<GameObject> _itemObjects = new List<GameObject>();
 
+    [SerializeField]
+    private int _inventoryNodeMaxItemAmount;
+
     private void Start()
     {
         _inventoryNodes = new GameObject[_inventoryNodesSize];
@@ -26,6 +29,7 @@ public class InventoryController : MonoBehaviour
         {
             //Debug.Log(child.gameObject.name);
             _inventoryNodes[counter] = child.gameObject;
+            _inventoryNodes[counter].GetComponent<InventoryNode>().SetMaxItemAmount(_inventoryNodeMaxItemAmount);
             Debug.Log(_inventoryNodes[counter]);
             counter++;
         }
@@ -66,9 +70,7 @@ public class InventoryController : MonoBehaviour
         _inventory = inventory;
         Debug.Log("setted inventory");
     }
-
-    
-
+ 
     /// <summary>
     /// This function provides getting inventory node according to index of node.
     /// </summary>
@@ -118,25 +120,6 @@ public class InventoryController : MonoBehaviour
                 }
             }
         }      
-    }
-
-    public bool ReplaceItemInInventory(ItemUI item, int amount, GameObject node)
-    {
-        if(node.GetComponent<InventoryNode>().GetIsFilled() == false)
-        {
-            node.GetComponent<InventoryNode>().SetItemId(item.GetItemId());
-            node.GetComponent<InventoryNode>().SetNodeItemSprite(item.GetItemSprite());
-            node.GetComponent<InventoryNode>().SetItemAmount(amount);
-            node.GetComponent<InventoryNode>().SetIsFilled(true);
-
-            return true;
-        }
-        else
-        {
-            Debug.LogError("Error: This node is not empty");
-            return false;
-        }
-       
     }
 
     public void RemoveItemFromInventory(int nodeIndex, int amount)
